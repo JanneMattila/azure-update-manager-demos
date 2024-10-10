@@ -98,14 +98,39 @@ $testMaintenanceConfiguration = New-AzMaintenanceConfiguration `
 $testMaintenanceConfiguration
 $testMaintenanceConfiguration.Id
 
+$productionMaintenanceConfiguration = New-AzMaintenanceConfiguration `
+    -Name "ProductionMaintenanceConfiguration" `
+    -ResourceGroupName $resourceGroupName `
+    -Location $location `
+    -MaintenanceScope "InGuestPatch" `
+    -Duration "03:00" `
+    -Timezone "FLE Standard Time" `
+    -RecurEvery "1Week Saturday" `
+    -StartDateTime "2024-10-10 01:00" -ExtensionProperty @{"InGuestPatchMode" = "Platform" }
+$productionMaintenanceConfiguration
+$productionMaintenanceConfiguration.Id
+
 # ------------
 
 # Configure periodic checking for missing system updates on azure Arc-enabled servers
 # - Note: OS specific policy assingment
+# - Tags:
+# {"environment": "Development"}
+
 # Machines should be configured to periodically check for missing system updates
+# - Audits if the machines are configured to periodically check for missing system updates
+
 # Schedule recurring updates using Azure Update Manager
+# - Tags:
+# [ {"key": "environment", "value": "Development"}, {"key": "environment", "value": "Test"}]
+# [ {"key": "environment", "value": "Production"} ]
+
 # [Preview]: Set prerequisite for Scheduling recurring updates on Azure virtual machines.
+
 # Configure periodic checking for missing system updates on azure virtual machines
+# - Note: OS specific policy assingment
+# - Tags:
+# {"environment": "Development"}
 
 $aumPolicies = Get-AzPolicyDefinition | Where-Object { $_.Metadata.Category -eq "Azure Update Manager" } 
 $aumPolicies | Format-List
